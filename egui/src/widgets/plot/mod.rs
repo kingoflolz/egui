@@ -69,9 +69,9 @@ const MIN_LINE_SPACING_IN_POINTS: f64 = 6.0; // TODO(emilk): large enough for a 
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize, serde::Serialize))]
 #[derive(Clone)]
-struct AutoBounds {
-    x: bool,
-    y: bool,
+pub struct AutoBounds {
+    pub x: bool,
+    pub y: bool,
 }
 
 impl AutoBounds {
@@ -616,6 +616,7 @@ impl Plot {
         let mut plot_ui = PlotUi {
             items: Vec::new(),
             next_auto_color_idx: 0,
+            auto_bounds: auto_bounds.clone(),
             last_screen_transform,
             response,
             ctx: ui.ctx().clone(),
@@ -862,6 +863,7 @@ impl Plot {
 pub struct PlotUi {
     items: Vec<Box<dyn PlotItem>>,
     next_auto_color_idx: usize,
+    auto_bounds: AutoBounds,
     last_screen_transform: ScreenTransform,
     response: Response,
     ctx: Context,
@@ -895,6 +897,11 @@ impl PlotUi {
     /// Returns `true` if the plot was clicked by the primary button.
     pub fn plot_clicked(&self) -> bool {
         self.response.clicked()
+    }
+
+    /// Returns `true` if the plot is using the auto bounds
+    pub fn is_auto_bounds(&self) -> AutoBounds {
+        self.auto_bounds.clone()
     }
 
     /// The pointer position in plot coordinates. Independent of whether the pointer is in the plot area.
